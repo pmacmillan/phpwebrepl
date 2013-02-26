@@ -1,11 +1,68 @@
-<script src="/socket.io/socket.io.js"></script>
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+  <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.1.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+
+  <style>
+    #console {
+      width: 800px;
+      height: 600px;
+      overflow: scroll;
+    }
+  </style>
+
+
+<form>
+  <input name="q" type="text" />
+</form>
+
+<pre>
+<div id="console"></div>
+</pre>
+
 <script>
+(function() {
   var socket = io.connect();
-  socket.on('response', function (data) {
-    console.log(data);
+  var $console = $('#console');
+
+  socket.on('stdout', function (data) {
+    $console.append(data);
+    $console.animate({ scrollTop: $console.prop("scrollHeight") }, 1);
+  });
+
+  socket.on('stderr', function (data) {
+    $console.append($('<span class="error">').text(data));
+    $console.animate({ scrollTop: $console.prop("scrollHeight") }, 1);
   });
 
   function sendToPHP(message) {
-    socket.emit('input', { data: message });
+    socket.emit('input', { command: message });
   }
+
+
+  $(function() {
+    var $form = $('form');
+    var $field = $('[name=q]');
+
+    $form.on('submit', function(e) {
+      e.preventDefault();
+
+      var cmd = $field.val();
+      $field.val('').focus();
+
+      if (cmd == 'clear') {
+        $console.empty();
+        return;
+      }
+
+      socket.emit('input', { command: (cmd + '\n') });
+    });
+  });
+}());
 </script>
+
+</body>
+</html>

@@ -1,16 +1,32 @@
 // vim: ts=2:sw=2:expandtab
 
 var util = require('util');
+var fs = require('fs');
+var spawn = require('child_process').spawn;
 var basePath = __dirname;
 
-var fs = require('fs');
-var phpin = fs.createReadStream(basePath + '/fromphp');
-var phpout = fs.createWriteStream(basePath + '/tophp');
-var phperr = fs.createReadStream(basePath + '/fromphp_error');
-var connections = [];
+var php = spawn('php', ['-a']);
 
-phpin.setEncoding('utf8');
-phperr.setEncoding('utf8');
+function configureSpawn(child, socket) {
+  child.stdout.setEncoding('utf8');
+  child.stdout.on('data', function(data) {
+    socket.emit('stdout', data);
+  });
+
+  child.stderr.setEncoding('utf8');
+  child.stderr.on('data', function(data) {
+    socket.emit('stderr', data);
+  });
+
+  socket.on('disconnect', function() {
+    child.stdin.end();
+  });
+
+  socket.on('input', function(input) {
+    child.stdin.write(input.command);
+  });
+}
+
 
 function handleInput(string) {
     if ('quit' === string) {
@@ -26,20 +42,6 @@ function handleInput(string) {
       phpout.write(string + '\n', 'utf8');
     }
 }
-
-phpin.on('data', function(data) {
-  // util.puts(data);
-  connections.forEach(function(socket) {
-    socket.emit('response', data);
-  });
-});
-
-phperr.on('data', function(data) {
-  // util.puts('error: ' + data);
-  connections.forEach(function(socket) {
-    socket.emit('response', 'error: ' + data);
-  });
-});
 
 //
 // socket.io server
@@ -69,12 +71,7 @@ function handler(req, res) {
 }
 
 io.sockets.on('connection', function(socket) {
-  connections.push(socket);
-
-  socket.on('input', function(data) {
-    // console.log('sending to php: ' + data.data);
-    phpout.write(data.data + '\n', 'utf8');
-  });
+  configureSpawn(spawn('php', ['-a']), socket);
 });
 
 
