@@ -1,0 +1,14 @@
+{
+  "name": "phpwebshell",
+  "version": "0.0.0",
+  "description": "a silly experiment",
+  "main": "proxy.js",
+  "dependencies": {
+    "socket.io": "~0.9.13"
+  },
+  "devDependencies": {},
+  "repository": "",
+  "author": "",
+  "license": "MIT",
+  "readmeFilename": "README.md"
+}
