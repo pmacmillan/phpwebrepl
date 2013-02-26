@@ -4,7 +4,8 @@
   "description": "a silly experiment",
   "main": "proxy.js",
   "dependencies": {
-    "socket.io": "~0.9.13"
+    "socket.io": "~0.9.13",
+    "pty.js": "~0.1.3"
   },
   "devDependencies": {},
   "repository": "",

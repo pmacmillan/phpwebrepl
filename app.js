@@ -2,25 +2,29 @@
 
 var util = require('util');
 var fs = require('fs');
-var spawn = require('child_process').spawn;
+var tty = require('tty');
+var spawn = require('pty.js').spawn;
 
-function configureSpawn(child, socket) {
-  child.stdout.setEncoding('utf8');
-  child.stdout.on('data', function(data) {
+function configureSocket(socket) {
+  var child = spawn(__dirname + '/run.sh', [], {
+    cwd: undefined,
+    env: [],
+    cols: 80,
+    rows: 25,
+    name: 'vt220'
+  });
+
+  child.setEncoding('utf8');
+  child.on('data', function(data) {
     socket.emit('stdout', data);
   });
 
-  child.stderr.setEncoding('utf8');
-  child.stderr.on('data', function(data) {
-    socket.emit('stderr', data);
-  });
-
   socket.on('disconnect', function() {
-    child.stdin.end();
+    child.destroy();
   });
 
   socket.on('input', function(input) {
-    child.stdin.write(input.command);
+    child.write(input.command);
   });
 }
 
@@ -52,7 +56,7 @@ function handler(req, res) {
 }
 
 io.sockets.on('connection', function(socket) {
-  configureSpawn(spawn('php', ['-a']), socket);
+  configureSocket(socket);
 });
 
 
