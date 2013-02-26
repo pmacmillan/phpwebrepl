@@ -1,25 +1,17 @@
+Just a stupid experiment
 
 0) install dependencies
 
 	npm install
 
-1) Create the named pipes
+1) start the app
 
-	mkfifo fromphp
-	mkfifo fromphp_error
-	mkfifo tophp
+	node app
 
-2) start php
+2) navigate to: http://localhost:9001
 
-	php -a < tophp > fromphp 2> fromphp_error &
+There is a bare minimal UI right now. Enter any PHP and press ENTER. It will go to the repl and will be executed.
 
-3) start the proxy
+(Some browsers might insist on CTRL+Enter, but you are just submitting the form).
 
-	node proxy
-
-4) navigate to: http://localhost:9001
-
-There is no UI right now, so open a debugging terminal and use:
-
-	sendToPHP('code...');
 
