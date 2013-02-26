@@ -25,22 +25,6 @@ function configureSpawn(child, socket) {
   });
 }
 
-
-function handleInput(string) {
-    if ('quit' === string) {
-      phpout.end();
-      phpin.destroy();
-      phperr.destroy();
-
-      process.exit(0);
-      return;
-    }
-
-    if (string) {
-      phpout.write(string + '\n', 'utf8');
-    }
-}
-
 //
 // socket.io server
 //
