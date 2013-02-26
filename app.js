@@ -3,7 +3,6 @@
 var util = require('util');
 var fs = require('fs');
 var spawn = require('child_process').spawn;
-var basePath = __dirname;
 
 function configureSpawn(child, socket) {
   child.stdout.setEncoding('utf8');
