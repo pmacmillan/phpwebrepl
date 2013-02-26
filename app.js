@@ -5,8 +5,6 @@ var fs = require('fs');
 var spawn = require('child_process').spawn;
 var basePath = __dirname;
 
-var php = spawn('php', ['-a']);
-
 function configureSpawn(child, socket) {
   child.stdout.setEncoding('utf8');
   child.stdout.on('data', function(data) {
