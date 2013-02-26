@@ -23,7 +23,7 @@ function handleInput(string) {
     }
 
     if (string) {
-      phpout.write(string + "\n", 'utf8');
+      phpout.write(string + '\n', 'utf8');
     }
 }
 
@@ -45,19 +45,19 @@ phperr.on('data', function(data) {
 // socket.io server
 //
 
-var app = require('http').createServer(handler)
-  , io = require('socket.io').listen(app);
+var app = require('http').createServer(handler);
+var io = require('socket.io').listen(app);
 
-io.enable('browser client minification');  // send minified client
-io.enable('browser client etag');          // apply etag caching logic based on version number
-io.enable('browser client gzip');          // gzip the file
-io.set('log level', 1);                    // reduce logging
+io.enable('browser client minification');
+io.enable('browser client etag');
+io.enable('browser client gzip');
+io.set('log level', 1);
 
 app.listen(9001);
 
-function handler (req, res) {
+function handler(req, res) {
   fs.readFile(__dirname + '/index.html',
-  function (err, data) {
+  function(err, data) {
     if (err) {
       res.writeHead(500);
       return res.end('Error loading index.html');
@@ -68,12 +68,12 @@ function handler (req, res) {
   });
 }
 
-io.sockets.on('connection', function (socket) {
+io.sockets.on('connection', function(socket) {
   connections.push(socket);
 
-  socket.on('input', function (data) {
+  socket.on('input', function(data) {
     // console.log('sending to php: ' + data.data);
-    phpout.write(data.data + "\n", 'utf8');
+    phpout.write(data.data + '\n', 'utf8');
   });
 });
 
