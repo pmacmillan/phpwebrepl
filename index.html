@@ -30,12 +30,12 @@
 
   socket.on('stdout', function (data) {
     $console.append(data);
-    $console.animate({ scrollTop: $console.prop("scrollHeight") }, 1);
+    $console.animate({ scrollTop: $console.prop("scrollHeight") }, 100);
   });
 
   socket.on('stderr', function (data) {
-    $console.append($('<span class="error">').text(data));
-    $console.animate({ scrollTop: $console.prop("scrollHeight") }, 1);
+    $console.append(data);
+    $console.animate({ scrollTop: $console.prop("scrollHeight") }, 100);
   });
 
   function sendToPHP(message) {
